@@ -1,0 +1,176 @@
+### <- triple hash to start a new call
+http://localhost:4004/odata/v4/MyService/mysrv(name='Micky Mouse')
+
+### consume the service document - describe the entity part of my service
+http://localhost:4004/odata/v4/CatalogService
+
+###Metadata document of the odata service
+http://localhost:4004/odata/v4/CatalogService/$metadata
+
+###Read all employee data
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet
+Authorization: Basic dharmesh:jamesbond
+
+### Read only the relevant fields of all empyess
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet?$select=ID,nameFirst,nameLast,sex,email
+
+### Get total count of employee record
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet/$count
+
+###pagination = load data chunk by chunk
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet?$select=ID,nameFirst,nameLast,sex,email&$top=2&$skip=2
+
+### load a single employee by serice key
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet/02BD2137-0890-1EEA-A6C2-BB55C197C7FB
+
+### another format
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet(ID='02BD2137-0890-1EEA-A6C2-BB55C197C7FB')
+
+###filter data based on condition with top 2
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet?$filter=bankName eq 'My Bank of London'&$top=2
+
+### filter data on pattern match
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet?$filter=contains(nameFirst,'Su')
+
+###data sorting - order by descending
+http://localhost:4004/odata/v4/CatalogService/EmployeeSet?$orderby=salaryAmount desc&$top=5
+
+### loose coupling
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet
+
+###single purchase order
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet(ID='74867AD200E41EDBA5D8B0C98DC28052')
+
+###single purchase order - second way
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC28052
+
+###load item data for header 
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC28052/Items
+
+###load order header and items together
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC50052?$expand=Items
+
+### call product set header
+http://localhost:4004/odata/v4/CDSService/ProductSet
+
+### using CDS view we do lazy loading
+http://localhost:4004/odata/v4/CDSService/ProductSet/74867AD200E41EDBA5D8B06B26EBC052?$expand=To_Items
+
+### using CDS view we do lazy loading - another way
+http://localhost:4004/odata/v4/CDSService/ProductSet(ProductId='74867AD200E41EDBA5D8B06B26EBC052')?$expand=To_Items
+
+### using odata v4 to allow filtering of child data
+http://localhost:4004/odata/v4/CDSService/ProductSet(ProductId='74867AD200E41EDBA5D8B06B26EBC052')?$expand=To_Items&$filter=To_Items/TaxAmount le 500
+
+### example for v2 OData
+http://localhost:4004/odata/v2/CDSService/ProductSet(ProductId='74867AD200E41EDBA5D8B06B26EBC052')?$expand=To_Items&$filter=To_Items/TaxAmount le 500
+
+### using odata v4 to allow filtering of child data - another way
+http://localhost:4004/odata/v4/CDSService/ProductSet/74867AD200E41EDBA5D8B06B26EBC052?$expand=To_Items&$filter=To_Items/TaxAmount le 500
+
+### using odata v4 to allow filtering of child data - one more another way
+http://localhost:4004/odata/v4/CDSService/ProductSet/74867AD200E41EDBA5D8B06B26EBC052?$expand=To_Items($filter=TaxAmount le 500)
+
+###create operation to insert data - POST CALL
+POST http://localhost:4004/odata/v4/CatalogService/EmployeeSet
+Authorization: Basic anubhav:Welcome1
+Content-Type: application/json
+
+{  
+  "nameFirst": "Christiano",
+  "nameMiddle": null,
+  "nameLast": "Ronaldo",
+  "nameInitials": null,
+  "sex": "M",
+  "language": "E",
+  "phoneNumber": null,
+  "email": "christiano@sap.com",
+  "loginName": "RONCHRIS",
+  "currency_code": "EUR",
+  "salaryAmount": 5000000,
+  "accountNumber": "4654656434",
+  "bankId": "44454",
+  "bankName": "My Bank of Portugal"
+}
+
+###update operation  - UPDATE CALL
+PATCH http://localhost:4004/odata/v4/CatalogService/EmployeeSet/5b490530-dc50-442f-ac4b-b10483a79f5e
+Content-Type: application/json
+
+{
+    "salaryAmount": 1999999
+}
+
+###delete data from db - DELETE CALL
+DELETE http://localhost:4004/odata/v4/CatalogService/EmployeeSet/dbb174ce-ee2c-4acf-96dd-89d2cabc0122
+
+### Get purchase order
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet
+
+### Post deep insert
+POST http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet
+Content-Type: application/json
+
+  {
+  "CURRENCY_code": "EUR",
+  "GROSS_AMOUNT": 3980.08,
+  "NET_AMOUNT": 3344.60,
+  "TAX_AMOUNT": 635.48,
+  "NODE_KEY": "74867AD200E41EDBA5D8B06B26EBD051",
+  "PO_ID": "300005555",
+  "PARTNER_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06885AFA052",
+  "LIFECYCLE_STATUS": "N",
+  "OVERALL_STATUS": "P",
+  "NOTE": "Example for deep insert",
+  "Items": [
+    {
+      "CURRENCY_code": "ZAR",
+      "GROSS_AMOUNT": 711.62,
+      "NET_AMOUNT": 598,
+      "TAX_AMOUNT": 113.62,
+      "NODE_KEY": "74867AD200E41EDBA5D8B0CBC4693151",
+      "PO_ITEM_POS": 10,
+      "PRODUCT_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06B26F56052"
+    },
+    {
+      "CURRENCY_code": "ZAR",
+      "GROSS_AMOUNT": 194.45,
+      "NET_AMOUNT": 163.4,
+      "TAX_AMOUNT": 31.05,
+      "NODE_KEY": "74867AD200E41EDBA5D8B0CBC3696152",
+      "PO_ITEM_POS": 20,
+      "PRODUCT_GUID_NODE_KEY": "74867AD200E41EDBA5D8B06B26EFC052"
+    }
+  ]
+}
+
+### Get call on the above order 
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B06B26EBD051?$expand=Items
+
+
+###update operation  - UPDATE CALL
+PATCH http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B06B26EBD051
+Content-Type: application/json
+
+{
+    "NOTE": "Superb example of an update call with created with deep insert"
+}
+
+
+###delete above order from db - DELETE CALL
+DELETE http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B06B26EBD051
+
+
+### Test the function to load top 3 POs
+http://localhost:4004/odata/v4/CatalogService/getLargestOrder()
+
+### read the PO data first
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC50052
+
+###boost the purchase order using actions in CAPM
+POST http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC50052/boost
+Content-Type: application/json
+
+{
+
+}
