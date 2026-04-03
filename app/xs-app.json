@@ -1,15 +1,14 @@
 {
   "welcomeFile": "managepo/webapp/index.html",
   "authenticationMethod": "route",
-  "sessionTimeout": 10,
-  "pluginMetadataEndpoint": "/odata/v4/CatalogService/$metadata",
+  "sessionTimeout": 10,  
   "routes": [	 
     {
       "source": "^/managepo/webapp/(.*)",
       "localDir": "managepo/webapp/",
       "target":"$1",  
-	  "authenticationType": "xsuaa",
-	  "csrfProtection": true
+	    "authenticationType": "xsuaa",
+	    "csrfProtection": true
     },
     {
       "source": "^/user-api/currentUser$",
@@ -18,7 +17,8 @@
     },    
     {
       "source": "^/(.*)$",
-      "destination" : "srv-api"
+      "destination" : "srv-api",
+      "authenticationType": "xsuaa"
      }
   ],  
   "logout": {
