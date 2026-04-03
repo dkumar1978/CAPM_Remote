@@ -7,16 +7,16 @@ service CatalogService @(path: 'CatalogService', requires : 'authenticated-user'
 
     entity EmployeeSet  @(
         restrict : [
-            { grant : ['READ'], to : 'Viewer', where : 'bankName = $user.bankName' },
-            { grant : ['WRITE', 'DELETE'], to : 'Editor' },
+            { grant : ['READ'], to : 'Display', where : 'bankName = $user.bankName' },
+            { grant : ['WRITE', 'DELETE'], to : 'Edit' },
         ])    
          as projection on master.employee;
 
             // @Capabilities: {Deletable: false}            
     entity PurchaseOrderSet @(
         restrict : [
-            { grant : ['READ'], to : 'Viewer' },
-            { grant : ['WRITE', 'DELETE'], to : 'Editor' },
+            { grant : ['READ'], to : 'Display' },
+            { grant : ['WRITE', 'DELETE'], to : 'Edit' },
         ],
         odata.draft.enabled         : true,
         Common.DefaultValuesFunction: 'setDefaultStatus'
